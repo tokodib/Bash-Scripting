@@ -9,13 +9,13 @@ The project is designed as a practical Bash scripting exercise. It starts with s
 The goal of this project is to create a Bash script that can monitor the basic health and resource usage of a Linux System.
 
 The final version should be able to:
-- [ ] Monitor CPU usage
+- [x] Monitor CPU usage
 - [ ] Monitor RAM usage
 - [ ] Monitor disk usage
 - [ ] Monitor network traffik
-- [ ] Gathering basic information
+- [x] Gathering basic information
 - [ ] Generate an HTML reports
-- [ ] Add timestamps to reports
+- [x] Add timestamps to reports
 - [ ] Store generated reports
 - [ ] Run automatically using `cron`
 - [ ] Delete old reports
@@ -38,7 +38,7 @@ The final version should be able to:
 - [x] Display operating system
 - [x] Display kernel version
 - [x] Display system uptime
-- [ ] Display current user
+- [x] Display current user
 
 ** Commands to investigate **
 - `hostname`
@@ -50,11 +50,11 @@ The final version should be able to:
 ### Phase 3 — CPU Monitoring
 
 - [x] Detect number of CPU cores
-- [ ] Read CPU information
+- [x] Read CPU information
 - [x] Calculate CPU usage
-- [ ] Read load average
-- [ ] Display CPU information
-- [ ] Create a CPU monitoring function
+- [x] Read load average
+- [x] Display CPU information
+- [x] Create a CPU monitoring function
 
 ** Commands / files to investigate **
 - `nproc`
