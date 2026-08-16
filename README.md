@@ -8,6 +8,7 @@ The projects grandually increase incomplexity, starting with basic system monito
 
 ## Goals
 
+Ezek a c;lok
 
 
 ## Projects
