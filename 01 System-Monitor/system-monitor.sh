@@ -40,6 +40,27 @@ get_system_info() {
 
 }
 
+#====================================================
+# RAM
+#====================================================
+
+get_ram_data() {
+	MEM_TOTAL=$(free -m | awk '/^Mem:/{print $2}')	
+	MEM_USED=$(free -m | awk '/^Mem:/{print $3}')	
+	MEM_FREE=$(free -m | awk '/^Mem:/{print $4}')	
+ 	MEM_AVAILABLE=$(free -m | awk '/^Mem:/{print $7}')
+ 	MEM_BUFFERS=$(free -m | awk '/^Mem:/{print $6}')	
+ 	MEM_CACHED=$(free -m | awk '/^Mem:/{print $7}')
+ 	MEM_PERCENT=$(awk "BEGIN {printf \"%.1f\", ($MEM_USED/$MEM_TOTAL)*100}")
+
+
+
+
+}
+
+#====================================================
+# Print System informations
+#====================================================
 get_cpu_data
 echo "CPU Info:"
 echo "CPU name: $CPU_MODEL"
@@ -53,6 +74,17 @@ echo "Load average 15min : $LOAD_15"
 echo -e "\nTOP 5 CPU load:"
 echo "USER 	PID 	USE 	APP"
 echo "$TOP_CPU"
+
+get_ram_data
+echo -e "\nMemory info:"
+echo "Total memory : $MEM_TOTAL Mbyte"
+echo "Used memory : $MEM_USED Mbyte"
+echo "Memory Free : $MEM_FREE Mbyte"
+echo "Memory Available : $MEM_AVAILABLE Mbyte"
+echo "Memory Buffer : $MEM_BUFFERS Mbyte"
+echo "Memory cached : $MEM_CACHED Mbyte"
+echo "Memory used (%) : $MEM_PERCENT %"
+
 
 get_system_info
 echo -e "\nSystem info:"

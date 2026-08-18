@@ -63,3 +63,14 @@ The final version should be able to:
 - `mpstat`
 - `/proc/cpuinfo`
 - `/proc/loadavg`
+
+### Phase 4 — RAM Monitoring
+
+- [x] Detect total RAM
+- [x] Detect used RAM
+- [x] Detect available RAM
+- [x] Calculate RAM usage percentage
+- [x] Create a memory monitoring function
+
+** Commands / files to investigate **
+- `free`
