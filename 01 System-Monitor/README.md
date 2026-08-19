@@ -10,7 +10,7 @@ The goal of this project is to create a Bash script that can monitor the basic h
 
 The final version should be able to:
 - [x] Monitor CPU usage
-- [ ] Monitor RAM usage
+- [x] Monitor RAM usage
 - [ ] Monitor disk usage
 - [ ] Monitor network traffik
 - [x] Gathering basic information
@@ -71,6 +71,9 @@ The final version should be able to:
 - [x] Detect available RAM
 - [x] Calculate RAM usage percentage
 - [x] Create a memory monitoring function
+- [x] Total Swap
+- [x] Used Swap
+- [x] Free Swap
 
 ** Commands / files to investigate **
 - `free`
