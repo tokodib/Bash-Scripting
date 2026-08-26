@@ -61,3 +61,4 @@ Progress will be tracked using checklists in the individual project README files
 Each project will start simple and become more advanced as new Bash and Linux concepts are learned.
 
 The scripts are intended primarily as learning projects, but the lomg-term goal is to make useful enough to run on real Linux systems.
+-
