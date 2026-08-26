@@ -11,8 +11,8 @@ The goal of this project is to create a Bash script that can monitor the basic h
 The final version should be able to:
 - [x] Monitor CPU usage
 - [x] Monitor RAM usage
-- [ ] Monitor disk usage
-- [ ] Monitor network traffik
+- [x] Monitor disk usage
+- [x] Monitor network traffik
 - [x] Gathering basic information
 - [ ] Generate an HTML reports
 - [x] Add timestamps to reports
@@ -77,3 +77,14 @@ The final version should be able to:
 
 ** Commands / files to investigate **
 - `free`
+
+### Phase 5 — Network Monitoring
+
+- [x] Interfaces
+- [x] Connections
+- [x] Network traffic
+- [x] Open ports
+
+** Commands / files to investigate **
+- `ip`
+- `ss`

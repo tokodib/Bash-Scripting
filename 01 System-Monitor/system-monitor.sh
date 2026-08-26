@@ -57,6 +57,37 @@ get_ram_data() {
 	TOP_RAM=$(ps aux --sort=-%mem | head -6 | awk 'NR>1 {printf "%s\t%s\t%.1f%%\t%s MB\t%s\n", $1, $2, $4, int($6/1024), $11}')
 }
 #====================================================
+# Network informations
+#====================================================
+get_network_data() {
+    INTERFACE=${INTERFACE:-eth0}
+    
+    # Measuring 
+    RX1=$(cat /sys/class/net/$INTERFACE/statistics/rx_bytes 2>/dev/null || echo 0)
+    TX1=$(cat /sys/class/net/$INTERFACE/statistics/tx_bytes 2>/dev/null || echo 0)
+    sleep 1
+    RX2=$(cat /sys/class/net/$INTERFACE/statistics/rx_bytes 2>/dev/null || echo 0)
+    TX2=$(cat /sys/class/net/$INTERFACE/statistics/tx_bytes 2>/dev/null || echo 0)
+    
+    
+    RX_SPEED=$(awk "BEGIN {printf \"%.2f\", ($RX2-$RX1)/1024}")
+    TX_SPEED=$(awk "BEGIN {printf \"%.2f\", ($TX2-$TX1)/1024}")
+    
+    # Total
+    RX_TOTAL=$(awk "BEGIN {printf \"%.2f\", $RX2/1024/1024/1024}")   # GB
+    TX_TOTAL=$(awk "BEGIN {printf \"%.2f\", $TX2/1024/1024/1024}")   # GB
+    
+    # Number of connections
+    CONNECTIONS=$(ss -tuln | wc -l)
+    
+    # Open ports
+    OPEN_PORTS=$(ss -tuln | awk 'NR>1 {printf "%s\t%s\t%s\n", $1, $5, $6}')
+    
+    # Network interfaces
+    INTERFACES=$(ip -s link show | grep -E '^[0-9]+:' | awk '{print $2}' | sed 's/://')
+    
+}
+#====================================================
 # Print System informations
 #====================================================
 get_cpu_data
@@ -90,6 +121,17 @@ echo "Percent Swap : $SWAP_PERCENT %"
 echo -e "\nTOP 5 RAM load:"
 echo "USER 	PID 	MEM% 	USE 	APP"
 echo "$TOP_RAM"
+
+get_network_data
+echo -e "\nNetwork informations:"
+echo "RX Speed: $RX_SPEED"
+echo "TX Speed: $TX_SPEED"
+echo "RX Total: $RX_TOTAL"
+echo "TX Total: $TX_TOTAL"
+echo -e "\nConnections : \n$CONNECTIONS"
+echo -e "\nOpen Ports : \n$OPEN_PORTS"
+echo -e "\nInterfaces : \n$INTERFACES"
+
 
 get_system_info
 
