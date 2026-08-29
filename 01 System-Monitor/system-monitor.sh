@@ -43,6 +43,7 @@ get_cpu_data() {
 
 	#TOP_CPU=$(ps aux --sort=-%cpu | head -6 | awk 'NR>1 {printf "<tr><td>%s</td><td>%s</td><td>%.1f%%</td><td>%s</td></tr>", $1, $2, $3, $11}')
 	TOP_CPU=$(ps aux --sort=-%cpu | head -6 | awk 'NR>1 {printf "%s \t%s \t%.1f%% \t%s\n", $1, $2, $3, $11}')
+	TOP_CPU_HTML=$(ps aux --sort=-%cpu | head -6 | awk 'NR>1 {printf "<tr><td>%s</td><td>%s</td><td>%.1f%%</td><td>%s</td></tr>", $1, $2, $3, $11}')
 }
 #====================================================
 # System informations
@@ -74,6 +75,7 @@ get_ram_data() {
  		SWAP_PERCENT=$(awk "BEGIN {printf \"%.1f\", ($SWAP_USED/$SWAP_TOTAL)*100}")
  	fi
 	TOP_RAM=$(ps aux --sort=-%mem | head -6 | awk 'NR>1 {printf "%s\t%s\t%.1f%%\t%s MB\t%s\n", $1, $2, $4, int($6/1024), $11}')
+	TOP_RAM_HTML=$(ps aux --sort=-%mem | head -6 | awk 'NR>1 {printf "<tr><td>%s</td><td>%s</td><td>%.1f%%</td><td>%s MB</td><td>%s</td></tr>", $1, $2, $4, int($6/1024), $11}')
 }
 #====================================================
 # Network informations
@@ -101,12 +103,34 @@ get_network_data() {
     
     # Open ports
     OPEN_PORTS=$(ss -tuln | awk 'NR>1 {printf "%s\t%s\t%s\n", $1, $5, $6}')
-    
+    OPEN_PORTS_HTML=$(ss -tuln | awk 'NR>1 {printf "<tr><td>%s</td><td>%s</td><td>%s</td></tr>", $1, $5, $6}')
+
     # Network interfaces
     INTERFACES=$(ip -s link show | grep -E '^[0-9]+:' | awk '{print $2}' | sed 's/://')
-    
+    INTERFACES_HTML=$(ip -s link show | grep -E '^[0-9]+:' | awk '{printf "<tr><td>%s</td><td>%s</td></tr>", $2, $3}' | sed 's/://')
+
 }
 
+#====================================================
+# Disk informations
+#====================================================
+get_disk_data() {
+	DISK_INFO=$(df -h | grep -E '^/dev/' | awk '{printf "%s\t %s\t %s\t %s\t%s\t%s\n", $1, $2, $3, $4, $5, $6}')
+	DISK_INFO_HTML=$(df -h | grep -E '^/dev/' | awk '{printf "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>", $1, $2, $3, $4, $5, $6}')
+	if command -v iostat &> /dev/null; then
+		DISK_IO=$(iostat -x 1 1 | tail -n +4 | awk 'NF>0 {printf "%s\t%s\t%s\t%s\t%s\t%s\n", $1, $2, $3, $4, $5, $6}')
+		DISK_IO_HTML=$(iostat -x 1 1 | tail -n +4 | awk 'NF>0 {printf "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>", $1, $2, $3, $4, $5, $6}')
+	else
+		DISK_IO="iostat command not found, please install sysstat package to get disk I/O statistics."
+	fi
+
+	INODE_INFO=$(df -i | grep -E '^/dev/' | awk '{printf "%s\t%s\t%s\t%s\t%s\t%s\n",$1, $2, $3, $4, $5, $6}')
+	INODE_INFO_HTML=$(df -i | grep -E '^/dev/' | awk '{printf "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>", $1, $2, $3, $4, $5, $6}')
+
+#	TOTAL_DISK=$(df -h --total | awk '/total/ {print $2}')
+#	USED_DISK=$(df -h --total | awk '/total/ {print $3}')
+#	FREE_DISK=$(df -h --total | awk '/total/ {print $4}')
+}
 #====================================================
 # GENERATE HTML report
 #====================================================
@@ -134,7 +158,11 @@ cat > "$REPORT_FILE" << 'HTMLEOF'
         <p>Load average 1 min: LOAD_AVERAGE_1_MIN_PLACEHOLDER%</p>
         <p>Load average 5 min: LOAD_AVERAGE_5_MIN_PLACEHOLDER%</p>
         <p>Load average 15 min: LOAD_AVERAGE_15_MIN_PLACEHOLDER%</p>
-        <p>TOP 5 processes: TOP_5_PROCESSES_PLACEHOLDER</p>
+        <h3>TOP 5 processes:</h3>
+			<table>
+                <tr><th>Felhasználó</th><th>PID</th><th>CPU%</th><th>Parancs</th></tr>
+                    TOP_5_PROCESSES_PLACEHOLDER
+            </table>
 
         <h2>Memory Information</h2>
         <p>Total Memory: TOTAL_MEMORY_PLACEHOLDER MB</p>
@@ -143,8 +171,13 @@ cat > "$REPORT_FILE" << 'HTMLEOF'
         <p>Available Memory: AVAILABLE_MEMORY_PLACEHOLDER MB</p>
         <p>Buffered Memory: BUFFERED_MEMORY_PLACEHOLDER MB</p>
         <p>Used Memory (%): USED_MEMORY_PERCENTAGE_PLACEHOLDER%</p>
-        <p>TOP 5 Memory Processes: TOP_5_MEMORY_PROCESSES_PLACEHOLDER</p>
-        
+
+        <h3>TOP 5 Memory Processes: </h3>
+            <table>
+                <tr><th>Felhasználó</th><th>PID</th><th>Mem%</th><th>Memória</th></tr>
+                TOP_5_MEMORY_PROCESSES_PLACEHOLDER
+            </table>
+
         <h2>Swap Information</h2>
         <p>Total Swap: TOTAL_SWAP_PLACEHOLDER MB</p>
         <p>Used Swap: USED_SWAP_PLACEHOLDER MB</p>
@@ -152,20 +185,39 @@ cat > "$REPORT_FILE" << 'HTMLEOF'
         <p>Percentage Swap (%): PERCENTAGE_SWAP_PLACEHOLDER%</p>
 
         <h2>Disk Usage</h2>
-        <p>Total Disk Space: TOTAL_DISK_PLACEHOLDER GB</p>
-        <p>Used Disk Space: USED_DISK_PLACEHOLDER GB</p>
-        <p>Free Disk Space: FREE_DISK_PLACEHOLDER GB</p>
+        <h3>Partitions:</h3>
+			<table>
+                <tr><th>Eszköz</th><th>Méret</th><th>Használt</th><th>Szabad</th><th>%</th><th>Csatolás</th></tr>
+                DISK_INFO_PLACEHOLDER
+            </table>
+
+		<h3>Inode használat</h3>
+                <table>
+                    <tr><th>Eszköz</th><th>Összes</th><th>Használt</th><th>Szabad</th><th>%</th></tr>
+                    INODE_INFO_PLACEHOLDER
+                </table>
+            </div>
+
 
         <h2>Network Information</h2>
         <p>Default interface: DEFAULT_INTERFACE_PLACEHOLDER</p>
         <p>RX Speed: RX_SPEED_PLACEHOLDER Mbps</p>
         <p>TX Speed: TX_SPEED_PLACEHOLDER Mbps</p>
-        <p>RX Total: RX_TOTAL_PLACEHOLDER MB</p>
-        <p>TX Total: TX_TOTAL_PLACEHOLDER MB</p>
+        <p>RX Total: RX_TOTAL_PLACEHOLDER GB</p>
+        <p>TX Total: TX_TOTAL_PLACEHOLDER GB</p>
 
         <p>Connections: CONNECTIONS_PLACEHOLDER</p>
-        <p>Open ports: OPEN_PORTS_PLACEHOLDER</p>
-        <p>Interfaces: INTERFACES_PLACEHOLDER</p>
+        <h3>Nyitott portok</h3>
+                <table>
+                    <tr><th>Protokoll</th><th>Cím:Port</th><th>Állapot</th></tr>
+                    OPEN_PORTS_PLACEHOLDER
+                </table>
+
+		<h3>Interfaces: </h3>
+				<table>
+                    <tr><th>Interface</th></tr>
+                    INTERFACES_PLACEHOLDER
+                </table>
 
 
         <footer>
@@ -244,6 +296,16 @@ echo "Kernel: $KERNEL"
 echo "User: $USER"
 echo "Generated: $TIMESTAMP"
 
+get_disk_data
+echo -e "\nDisk info:"
+echo "Partitions:"
+echo -e "$DISK_INFO"
+
+echo -e "\nDISK I/O:"
+echo -e "$DISK_IO"
+echo -e "\nInode Info:"
+echo -e "$INODE_INFO"
+
 #====================================================
 # Change placeholders in the HTML report
 #====================================================
@@ -279,12 +341,16 @@ sed -i "s/DEFAULT_INTERFACE_PLACEHOLDER/$INTERFACE/g" "$REPORT_FILE"
 sed -i "s/TOTAL_DISK_PLACEHOLDER/$TOTAL_DISK/g" "$REPORT_FILE"
 sed -i "s/USED_DISK_PLACEHOLDER/$USED_DISK/g" "$REPORT_FILE"
 sed -i "s/FREE_DISK_PLACEHOLDER/$FREE_DISK/g" "$REPORT_FILE"
+sed -i "s|DISK_INFO_PLACEHOLDER|$DISK_INFO_HTML|g" "$REPORT_FILE"
+sed -i "s|INODE_INFO_PLACEHOLDER|$INODE_INFO_HTML|g" "$REPORT_FILE"
+sed -i "s|INTERFACES_PLACEHOLDER|$INTERFACES_HTML|g" "$REPORT_FILE"
+sed -i "s|OPEN_PORTS_PLACEHOLDER|$OPEN_PORTS_HTML|g" "$REPORT_FILE"
 
-#sed -i "s/INTERFACES_PLACEHOLDER/$INTERFACES/g" "$REPORT_FILE"
-#sed -i "s/TOP_5_PROCESSES_PLACEHOLDER/$TOP_CPU/g" "$REPORT_FILE"
-#sed -i "s/TOP_5_MEMORY_PROCESSES_PLACEHOLDER/$TOP_RAM/g" "$REPORT_FILE"
-#sed -i "s/OPEN_PORTS_PLACEHOLDER/$OPEN_PORTS/g" "$REPORT_FILE"
+sed -i "s|TOP_5_PROCESSES_PLACEHOLDER|$TOP_CPU_HTML|g" "$REPORT_FILE"
+sed -i "s|TOP_5_MEMORY_PROCESSES_PLACEHOLDER|$TOP_RAM_HTML|g" "$REPORT_FILE"
 
 # --- Create index.html for actual report ---
 cp "$REPORT_FILE" "$LATEST_LINK"
 
+# --- Clean up old reports ---
+find "$REPORT_DIR" -name "system_report_*.html" -mtime +$RETENTION_DAYS -delete
