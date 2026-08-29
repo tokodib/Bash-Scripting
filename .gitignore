@@ -1,0 +1,4 @@
+# Ignore generated reports and logs
+reports/
+logs/
+log/

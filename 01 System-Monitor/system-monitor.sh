@@ -160,7 +160,7 @@ cat > "$REPORT_FILE" << 'HTMLEOF'
         <p>Load average 15 min: LOAD_AVERAGE_15_MIN_PLACEHOLDER%</p>
         <h3>TOP 5 processes:</h3>
 			<table>
-                <tr><th>Felhasználó</th><th>PID</th><th>CPU%</th><th>Parancs</th></tr>
+                <tr><th>User</th><th>PID</th><th>CPU%</th><th>Command</th></tr>
                     TOP_5_PROCESSES_PLACEHOLDER
             </table>
 
@@ -174,7 +174,7 @@ cat > "$REPORT_FILE" << 'HTMLEOF'
 
         <h3>TOP 5 Memory Processes: </h3>
             <table>
-                <tr><th>Felhasználó</th><th>PID</th><th>Mem%</th><th>Memória</th></tr>
+                <tr><th>User</th><th>PID</th><th>Mem%</th><th>Memory</th></tr>
                 TOP_5_MEMORY_PROCESSES_PLACEHOLDER
             </table>
 
@@ -187,13 +187,13 @@ cat > "$REPORT_FILE" << 'HTMLEOF'
         <h2>Disk Usage</h2>
         <h3>Partitions:</h3>
 			<table>
-                <tr><th>Eszköz</th><th>Méret</th><th>Használt</th><th>Szabad</th><th>%</th><th>Csatolás</th></tr>
+                <tr><th>Device</th><th>Size</th><th>Used</th><th>Available</th><th>%</th><th>Mount Point</th></tr>
                 DISK_INFO_PLACEHOLDER
             </table>
 
-		<h3>Inode használat</h3>
+		<h3>Inode Usage</h3>
                 <table>
-                    <tr><th>Eszköz</th><th>Összes</th><th>Használt</th><th>Szabad</th><th>%</th></tr>
+                    <tr><th>Device</th><th>Total</th><th>Used</th><th>Available</th><th>%</th></tr>
                     INODE_INFO_PLACEHOLDER
                 </table>
             </div>
@@ -207,9 +207,9 @@ cat > "$REPORT_FILE" << 'HTMLEOF'
         <p>TX Total: TX_TOTAL_PLACEHOLDER GB</p>
 
         <p>Connections: CONNECTIONS_PLACEHOLDER</p>
-        <h3>Nyitott portok</h3>
+        <h3>Open Ports</h3>
                 <table>
-                    <tr><th>Protokoll</th><th>Cím:Port</th><th>Állapot</th></tr>
+                    <tr><th>Protocol</th><th>Address:Port</th><th>Status</th></tr>
                     OPEN_PORTS_PLACEHOLDER
                 </table>
 

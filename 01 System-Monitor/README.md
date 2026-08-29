@@ -88,3 +88,22 @@ The final version should be able to:
 ** Commands / files to investigate **
 - `ip`
 - `ss`
+
+### Phase 6 — Disk Monitoring
+
+- [x] Partitions
+- [x] Inode Usage
+
+** Commands / files to investigate **
+- `df`
+
+### Phase 7 — Generate HTML report
+
+- [x] Generate HTML report
+- [x] Change variables
+- [x] Formatting HTML
+- [x] Clean up old reports
+
+** Commands / files to investigate **
+- `html`
+- `find`
