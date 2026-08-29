@@ -14,11 +14,11 @@ The final version should be able to:
 - [x] Monitor disk usage
 - [x] Monitor network traffik
 - [x] Gathering basic information
-- [ ] Generate an HTML reports
+- [x] Generate an HTML reports
 - [x] Add timestamps to reports
-- [ ] Store generated reports
+- [x] Store generated reports
 - [ ] Run automatically using `cron`
-- [ ] Delete old reports
+- [x] Delete old reports
 
 ## 🗺️ Development Roadmap
 

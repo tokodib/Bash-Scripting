@@ -34,7 +34,7 @@ This script generates an HTML report and can be executed automatically using `cr
 
 `Bash` · `Linux` · `awk` · `grep` · `/proc` · `HTML` · `cron`
 
-** Status: ** 🟡 In Progress
+** Status: ** 🟢 Finished
 
 
 
